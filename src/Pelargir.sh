@@ -3,18 +3,18 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-    address 10.76.2.210
+    address 10.76.2.214
     netmask 255.255.255.252
-    gateway 10.76.2.209
+    gateway 10.76.2.213
 
 auto eth1
 iface eth1 inet static
-    address 10.76.2.213
+    address 10.76.2.217
     netmask 255.255.255.252
 
 auto eth2
 iface eth2 inet static
-    address 10.76.2.217
+    address 10.76.2.221
     netmask 255.255.255.252
 EOF
 
@@ -27,7 +27,7 @@ echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 sysctl -w net.ipv4.ip_forward=1
 
 # ===== ROUTING KE ANDUINBANKS =====
-route add -net 10.76.2.0 netmask 255.255.255.128 gw 10.76.2.214  # A4 (Gilgalad, Cirdan)
+route add -net 10.76.2.0 netmask 255.255.255.128 gw 10.76.2.218  # A4 (Gilgalad, Cirdan)
 
 apt update
 apt install isc-dhcp-relay -y

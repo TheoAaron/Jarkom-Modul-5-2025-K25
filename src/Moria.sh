@@ -3,13 +3,13 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-    address 10.76.2.222
+    address 10.76.2.226
     netmask 255.255.255.252
-    gateway 10.76.2.221
+    gateway 10.76.2.225
 
 auto eth1
 iface eth1 inet static
-    address 10.76.2.225
+    address 10.76.2.233
     netmask 255.255.255.252
 
 auto eth2

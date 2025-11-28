@@ -3,9 +3,9 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-    address 10.76.2.226
+    address 10.76.2.234
     netmask 255.255.255.252
-    gateway 10.76.2.225
+    gateway 10.76.2.233
 EOF
 
 ifdown eth0 && ifup eth0
