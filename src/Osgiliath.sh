@@ -34,3 +34,5 @@ route add -net 10.76.2.128 netmask 255.255.255.192 gw 10.76.2.222
 route add -net 10.76.2.192 netmask 255.255.255.248 gw 10.76.2.222
 
 route add -net 10.76.2.200 netmask 255.255.255.248 gw 10.76.2.234
+
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE

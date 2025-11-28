@@ -1,5 +1,9 @@
 # KONFIGURASI JARINGAN MODUL 5
 
+## GRAFIK PEMBAGIAN IP
+
+![Grafik IP](/Assets/Grafik-PembagianIP.png)
+
 ## DAFTAR NODE & FUNGSI
 
 | Node | IP Address | Fungsi |
