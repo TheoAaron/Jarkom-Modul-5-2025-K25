@@ -8,7 +8,7 @@ iface eth0 inet static
     gateway 10.76.2.217
 EOF
 
-service networking restart
+ifdown eth0 && ifup eth0
 
 echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 

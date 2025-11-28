@@ -18,7 +18,9 @@ iface eth2 inet static
     netmask 255.255.255.248
 EOF
 
-service networking restart
+ifdown eth0 && ifup eth0
+ifdown eth1 && ifup eth1
+ifdown eth2 && ifup eth2
 
 echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
