@@ -22,6 +22,8 @@ service networking restart
 
 echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
+sysctl -w net.ipv4.ip_forward=1
+
 route add -net 10.76.2.212 netmask 255.255.255.252 gw 10.76.2.210
 route add -net 10.76.2.0 netmask 255.255.255.128 gw 10.76.2.210
 route add -net 10.76.2.216 netmask 255.255.255.252 gw 10.76.2.210

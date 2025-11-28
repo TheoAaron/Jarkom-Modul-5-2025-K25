@@ -22,6 +22,8 @@ service networking restart
 
 echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
+sysctl -w net.ipv4.ip_forward=1
+
 apt update
 apt install isc-dhcp-relay -y
 
