@@ -1,0 +1,59 @@
+#!/bin/bash
+
+cat > /etc/network/interfaces << 'EOF'
+auto eth0
+iface eth0 inet static
+address 10.76.2.202
+netmask 255.255.255.248
+gateway 10.76.2.201
+EOF
+
+service networking restart
+
+apt update
+apt install isc-dhcp-server -y
+
+echo 'INTERFACESv4="eth0"' > /etc/default/isc-dhcp-server
+
+cat > /etc/dhcp/dhcpd.conf << 'EOF'
+subnet 10.76.2.0 netmask 255.255.255.128 {
+    range 10.76.2.2 10.76.2.126;
+    option routers 10.76.2.1;
+    option broadcast-address 10.76.2.127;
+    option domain-name-servers 10.76.2.203;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+subnet 10.76.1.0 netmask 255.255.255.0 {
+    range 10.76.1.2 10.76.1.254;
+    option routers 10.76.1.1;
+    option broadcast-address 10.76.1.255;
+    option domain-name-servers 10.76.2.203;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+subnet 10.76.2.128 netmask 255.255.255.192 {
+    range 10.76.2.130 10.76.2.190;
+    option routers 10.76.2.129;
+    option broadcast-address 10.76.2.191;
+    option domain-name-servers 10.76.2.203;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+subnet 10.76.2.192 netmask 255.255.255.248 {
+    range 10.76.2.194 10.76.2.198;
+    option routers 10.76.2.193;
+    option broadcast-address 10.76.2.199;
+    option domain-name-servers 10.76.2.203;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+subnet 10.76.2.200 netmask 255.255.255.248 {
+}
+EOF
+
+service isc-dhcp-server restart
