@@ -3,12 +3,14 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-address 10.76.2.202
-netmask 255.255.255.248
-gateway 10.76.2.201
+    address 10.76.2.202
+    netmask 255.255.255.248
+    gateway 10.76.2.201
 EOF
 
 service networking restart
+
+echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
 apt update
 apt install isc-dhcp-server -y

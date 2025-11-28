@@ -3,22 +3,24 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-address 10.76.2.206
-netmask 255.255.255.252
-gateway 10.76.2.205
+    address 10.76.2.206
+    netmask 255.255.255.252
+    gateway 10.76.2.205
 
 auto eth1
 iface eth1 inet static
-address 10.76.2.209
-netmask 255.255.255.252
+    address 10.76.2.209
+    netmask 255.255.255.252
 
 auto eth2
 iface eth2 inet static
-address 10.76.1.1
-netmask 255.255.255.0
+    address 10.76.1.1
+    netmask 255.255.255.0
 EOF
 
 service networking restart
+
+echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
 route add -net 10.76.2.212 netmask 255.255.255.252 gw 10.76.2.210
 route add -net 10.76.2.0 netmask 255.255.255.128 gw 10.76.2.210

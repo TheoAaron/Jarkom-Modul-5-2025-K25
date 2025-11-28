@@ -3,17 +3,19 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-address 10.76.2.234
-netmask 255.255.255.252
-gateway 10.76.2.233
+    address 10.76.2.234
+    netmask 255.255.255.252
+    gateway 10.76.2.233
 
 auto eth1
 iface eth1 inet static
-address 10.76.2.201
-netmask 255.255.255.248
+    address 10.76.2.201
+    netmask 255.255.255.248
 EOF
 
 service networking restart
+
+echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
 apt update
 apt install isc-dhcp-relay -y

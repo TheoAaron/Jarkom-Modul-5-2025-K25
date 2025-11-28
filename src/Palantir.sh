@@ -3,12 +3,14 @@
 cat > /etc/network/interfaces << 'EOF'
 auto eth0
 iface eth0 inet static
-address 10.76.2.218
-netmask 255.255.255.252
-gateway 10.76.2.217
+    address 10.76.2.218
+    netmask 255.255.255.252
+    gateway 10.76.2.217
 EOF
 
 service networking restart
+
+echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
 apt update
 apt install apache2 -y
