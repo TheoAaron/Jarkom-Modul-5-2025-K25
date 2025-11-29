@@ -6,10 +6,10 @@ A4,"Osgiliath > Minastir > Pelargir > AnduinBanks > Switch5 > Gilgalad, Cirdan",
 A5,Osgiliath > Minastir > Pelargir > Palantir,2,/30
 A6,"Osgiliath > Minastir > Switch4 > Elendil, Isildur",230,/24
 A7,Osgiliath > Moria,2,/30
-A8,Osgiliath > Moria > Switch1 >  IronHills,2,/30
+A8,Osgiliath > Moria > IronHills,2,/30
 A9,Osgiliath > Moria > Wilderland,2,/30
 A10,Osgiliath > Moria > Wilderland > Durin,51,/26
-A11,Osgiliath > Moria > Wilderland > Switch2 > Khamul,5,/29
+A11,Osgiliath > Moria > Wilderland > Khamul,5,/29
 A12,Osgiliath > Rivendell,2,/30
 A13,"Osgiliath > Rivendell > Switch3 > Vilya, Narya",3,/29
 Total,,425,/23

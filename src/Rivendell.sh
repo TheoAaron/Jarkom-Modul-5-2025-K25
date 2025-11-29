@@ -1,27 +1,29 @@
 #!/bin/bash
 
-cat > /etc/network/interfaces << 'EOF'
-auto eth0
-iface eth0 inet static
-    address 10.76.2.238
-    netmask 255.255.255.252
-    gateway 10.76.2.237
+# Enable IP forwarding first
+echo 1 > /proc/sys/net/ipv4/ip_forward
+sysctl -w net.ipv4.ip_forward=1
 
-auto eth1
-iface eth1 inet static
-    address 10.76.2.201
-    netmask 255.255.255.248
-EOF
+# Bring up interfaces
+ip link set eth0 up
+ip link set eth1 up
 
-ifdown eth0 && ifup eth0
-ifdown eth1 && ifup eth1
+# Flush and configure IPs manually
+ip addr flush dev eth0
+ip addr flush dev eth1
+ip addr add 10.76.2.238/30 dev eth0
+ip addr add 10.76.2.201/29 dev eth1
 
 echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 
-sysctl -w net.ipv4.ip_forward=1
-
 apt update
 apt install isc-dhcp-relay -y
+
+# Add route for directly connected subnet
+ip route add 10.76.2.236/30 dev eth0 2>/dev/null || true
+ip route add 10.76.2.200/29 dev eth1 2>/dev/null || true
+
+route add default gw 10.76.2.237  # Default ke Osgiliath
 
 cat > /etc/default/isc-dhcp-relay << 'EOF'
 SERVERS="10.76.2.202"

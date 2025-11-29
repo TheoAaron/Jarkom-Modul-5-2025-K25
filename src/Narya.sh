@@ -5,12 +5,17 @@ auto eth0
 iface eth0 inet static
     address 10.76.2.203
     netmask 255.255.255.248
-    gateway 10.76.2.201
 EOF
 
-ifdown eth0 && ifup eth0
+service networking restart
+
+# Ensure IP address is assigned
+ip addr add 10.76.2.203/29 dev eth0 2>/dev/null || true
+ip link set eth0 up
 
 echo 'nameserver 192.168.122.1' > /etc/resolv.conf
+
+route add default gw 10.76.2.201  # Default ke Rivendell
 
 apt update
 apt install bind9 -y
