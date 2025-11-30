@@ -9,13 +9,15 @@ EOF
 
 service networking restart
 
-# Ensure IP address is assigned
 ip addr add 10.76.2.230/30 dev eth0 2>/dev/null || true
 ip link set eth0 up
 
-echo 'nameserver 192.168.122.1' > /etc/resolv.conf
+cat > /etc/resolv.conf << 'EOF'
+nameserver 192.168.122.1
+nameserver 8.8.8.8
+EOF
 
-route add default gw 10.76.2.229  # Default ke Moria
+route add default gw 10.76.2.229
 
 apt update
 apt install apache2 -y
