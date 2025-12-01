@@ -64,6 +64,349 @@ Semua konfigurasi sudah digabung dalam satu file per node:
 
 Tidak ada lagi file terpisah seperti `*_Relay.sh`, `*_DHCP.sh`, dll.
 
+## MISI 1: MEMETAKAN MEDAN PERANG
+
+### 1.1 - Identifikasi Perangkat
+
+#### Server Infrastructure
+| Perangkat | IP Address | Fungsi | Lokasi File |
+|-----------|------------|--------|-------------|
+| **Vilya** | 10.76.2.202 | DHCP Server | `src/Vilya.sh` |
+| **Narya** | 10.76.2.203 | DNS Server | `src/Narya.sh` |
+| **Palantir** | 10.76.2.222 | Web Server | `src/Palantir.sh` |
+| **IronHills** | 10.76.2.230 | Web Server | `src/IronHills.sh` |
+
+#### Router & DHCP Relay
+| Perangkat | Interfaces | Fungsi | Lokasi File |
+|-----------|------------|--------|-------------|
+| **Osgiliath** | eth0 (DHCP), eth1-eth3 (static) | Router Utama + NAT | `src/Osgiliath.sh` |
+| **Minastir** | eth0-eth2 | Router + DHCP Relay | `src/Minastir.sh` |
+| **Pelargir** | eth0-eth2 | Router + DHCP Relay | `src/Pelargir.sh` |
+| **AnduinBanks** | eth0-eth1 | Router + DHCP Relay | `src/AnduinBanks.sh` |
+| **Moria** | eth0-eth2 | Router + DHCP Relay | `src/Moria.sh` |
+| **Wilderland** | eth0-eth2 | Router + DHCP Relay | `src/Wilderland.sh` |
+| **Rivendell** | eth0-eth1 | Router + DHCP Relay | `src/Rivendell.sh` |
+
+#### Client (Pasukan) - DHCP Enabled
+| Pasukan | Jumlah Host | Subnet | Karakter ZZZ | Lokasi File |
+|---------|-------------|--------|--------------|-------------|
+| **Elendil** | 200 host | 10.76.1.0/24 | Jane | `src/Elendil.sh` |
+| **Gilgalad** | 100 host | 10.76.2.0/25 | Ellen | `src/Gilgalad.sh` |
+| **Durin** | 50 host | 10.76.2.128/26 | Caesar | `src/Durin.sh` |
+| **Isildur** | 30 host | 10.76.1.0/24 | Policeboo | `src/Isildur.sh` |
+| **Cirdan** | 20 host | 10.76.2.0/25 | Lycaon | `src/Cirdan.sh` |
+| **Khamul** | 5 host | 10.76.2.192/29 | Burnice (Target) | `src/Khamul.sh` |
+
+### 1.2 - Pohon Subnet (VLSM Tree)
+```
+Prefix Kelompok: 10.76.0.0/16
+│
+├─ A6: 10.76.1.0/24 (Elendil & Isildur - 230 host) ◯
+│
+└─ 10.76.2.0/23
+   ├─ A4: 10.76.2.0/25 (Gilgalad & Cirdan - 120 host) ◯
+   │
+   └─ 10.76.2.128/24
+      ├─ A10: 10.76.2.128/26 (Durin - 51 host) ◯
+      │
+      └─ 10.76.2.192/25
+         ├─ A13: 10.76.2.200/29 (Vilya & Narya - 6 host) ◯
+         ├─ A1: 10.76.2.208/30 (Osgiliath-Minastir)
+         ├─ A2: 10.76.2.212/30 (Minastir-Pelargir)
+         ├─ A3: 10.76.2.216/30 (Pelargir-AnduinBanks)
+         ├─ A5: 10.76.2.220/30 (Pelargir-Palantir)
+         ├─ A7: 10.76.2.224/30 (Osgiliath-Moria)
+         ├─ A8: 10.76.2.228/30 (Moria-IronHills)
+         ├─ A9: 10.76.2.232/30 (Moria-Wilderland)
+         ├─ A12: 10.76.2.236/30 (Osgiliath-Rivendell)
+         └─ A11: 10.76.2.192/29 (Khamul - 5 host) ◯
+
+◯ = Subnet yang dilingkari (Client Networks)
+```
+
+### 1.3 - Tabel Pembagian IP Lengkap
+
+| Subnet | Network ID | Netmask | Broadcast | Range IP | Gateway | Jumlah Host |
+|--------|------------|---------|-----------|----------|---------|-------------|
+| **A1** | 10.76.2.208/30 | 255.255.255.252 | 10.76.2.211 | .209-.210 | - | 2 |
+| **A2** | 10.76.2.212/30 | 255.255.255.252 | 10.76.2.215 | .213-.214 | - | 2 |
+| **A3** | 10.76.2.216/30 | 255.255.255.252 | 10.76.2.219 | .217-.218 | - | 2 |
+| **A4** | 10.76.2.0/25 | 255.255.255.128 | 10.76.2.127 | .2-.126 | .1 | 120 |
+| **A5** | 10.76.2.220/30 | 255.255.255.252 | 10.76.2.223 | .221-.222 | - | 2 |
+| **A6** | 10.76.1.0/24 | 255.255.255.0 | 10.76.1.255 | .2-.254 | .1 | 230 |
+| **A7** | 10.76.2.224/30 | 255.255.255.252 | 10.76.2.227 | .225-.226 | - | 2 |
+| **A8** | 10.76.2.228/30 | 255.255.255.252 | 10.76.2.231 | .229-.230 | - | 2 |
+| **A9** | 10.76.2.232/30 | 255.255.255.252 | 10.76.2.235 | .233-.234 | - | 2 |
+| **A10** | 10.76.2.128/26 | 255.255.255.192 | 10.76.2.191 | .130-.190 | .129 | 51 |
+| **A11** | 10.76.2.192/29 | 255.255.255.248 | 10.76.2.199 | .194-.198 | .193 | 5 |
+| **A12** | 10.76.2.236/30 | 255.255.255.252 | 10.76.2.239 | .237-.238 | - | 2 |
+| **A13** | 10.76.2.200/29 | 255.255.255.248 | 10.76.2.207 | .201-.206 | .201 | 6 |
+
+### 1.4 - Topologi Jaringan
+```
+                        Internet (NAT Cloud)
+                                |
+                          [Osgiliath] (Router Utama)
+                          /    |    \
+                         /     |     \
+                  [Minastir] [Moria] [Rivendell]
+                   /    |      |   \      |
+                  /     |      |    \     |
+           [Pelargir] [SW2] [SW8] [Wilderland] [SW9]
+            /    |      |      |      |    |     |
+           /     |      |      |      |    |     |
+    [AnduinBanks] [Palantir] [IronHills] [SW6] [SW7] [Vilya & Narya]
+         |                                |    |
+       [SW5]                           [SW10][SW11]
+         |                               |    |
+    [Gilgalad & Cirdan]              [Durin][Khamul]
+    
+         [SW2] = Elendil & Isildur
+```
+
+### 1.5 - Konfigurasi Routing
+
+Semua konfigurasi routing sudah terintegrasi dalam file shell script masing-masing node.
+
+#### Cara Setup Jaringan:
+
+**Step 1: Setup Router Utama (Osgiliath)**
+```bash
+bash src/Osgiliath.sh
+```
+- Enable IP forwarding
+- Setup NAT dengan SNAT (bukan MASQUERADE)
+- Routing ke semua cabang (Minastir, Moria, Rivendell)
+
+**Step 2: Setup Router Cabang**
+```bash
+# Cabang Minastir
+bash src/Minastir.sh
+bash src/Pelargir.sh
+bash src/AnduinBanks.sh
+
+# Cabang Moria
+bash src/Moria.sh
+bash src/Wilderland.sh
+
+# Cabang Rivendell
+bash src/Rivendell.sh
+```
+
+**Step 3: Setup Server Infrastructure**
+```bash
+# DHCP Server
+bash src/Vilya.sh
+
+# DNS Server
+bash src/Narya.sh
+
+# Web Servers
+bash src/Palantir.sh
+bash src/IronHills.sh
+```
+
+**Step 4: Setup Client (Pasukan)**
+```bash
+bash src/Gilgalad.sh
+bash src/Cirdan.sh
+bash src/Elendil.sh
+bash src/Isildur.sh
+bash src/Durin.sh
+bash src/Khamul.sh
+```
+
+### 1.6 - Konfigurasi Service
+
+#### A. DHCP Server (Vilya)
+
+**File:** `src/Vilya.sh`
+
+**Subnet Configuration:**
+```bash
+# A4: Gilgalad & Cirdan (120 host)
+subnet 10.76.2.0 netmask 255.255.255.128 {
+    range 10.76.2.2 10.76.2.126;
+    option routers 10.76.2.1;
+    option domain-name-servers 10.76.2.203;
+}
+
+# A6: Elendil & Isildur (230 host)
+subnet 10.76.1.0 netmask 255.255.255.0 {
+    range 10.76.1.2 10.76.1.254;
+    option routers 10.76.1.1;
+    option domain-name-servers 10.76.2.203;
+}
+
+# A10: Durin (51 host)
+subnet 10.76.2.128 netmask 255.255.255.192 {
+    range 10.76.2.130 10.76.2.190;
+    option routers 10.76.2.129;
+    option domain-name-servers 10.76.2.203;
+}
+
+# A11: Khamul (5 host)
+subnet 10.76.2.192 netmask 255.255.255.248 {
+    range 10.76.2.194 10.76.2.198;
+    option routers 10.76.2.193;
+    option domain-name-servers 10.76.2.203;
+}
+```
+
+**Verifikasi:**
+```bash
+# Di Vilya
+service isc-dhcp-server status
+cat /var/log/syslog | grep dhcpd
+```
+
+#### B. DHCP Relay
+
+**Router yang berfungsi sebagai DHCP Relay:**
+- AnduinBanks
+- Minastir
+- Pelargir
+- Rivendell
+- Moria
+- Wilderland
+
+**Configuration Pattern:**
+```bash
+# Di setiap DHCP Relay
+cat > /etc/default/isc-dhcp-relay << 'EOF'
+SERVERS="10.76.2.202"    # IP Vilya (DHCP Server)
+INTERFACES="eth0 eth1 eth2"  # Sesuaikan dengan interface
+OPTIONS=""
+EOF
+
+service isc-dhcp-relay restart
+```
+
+**Verifikasi:**
+```bash
+# Di router relay
+service isc-dhcp-relay status
+```
+
+#### C. DNS Server (Narya)
+
+**File:** `src/Narya.sh`
+
+**Configuration:**
+```bash
+# /etc/bind/named.conf.options
+options {
+    directory "/var/cache/bind";
+    forwarders {
+        192.168.122.1;  # Forward ke DNS external
+    };
+    allow-query { any; };
+    auth-nxdomain no;
+    listen-on-v6 { any; };
+};
+```
+
+**Verifikasi:**
+```bash
+# Di Narya
+service bind9 status
+named-checkconf
+
+# Test dari client
+nslookup google.com 10.76.2.203
+```
+
+#### D. Web Server (Apache)
+
+**Palantir (10.76.2.222):**
+```bash
+# File: src/Palantir.sh
+cat > /var/www/html/index.html << 'EOF'
+Welcome to Palantir
+EOF
+
+service apache2 start
+```
+
+**IronHills (10.76.2.230):**
+```bash
+# File: src/IronHills.sh
+cat > /var/www/html/index.html << 'EOF'
+Welcome to IronHills
+EOF
+
+service apache2 start
+```
+
+**Verifikasi:**
+```bash
+# Test dari client
+curl http://10.76.2.222  # Palantir
+curl http://10.76.2.230  # IronHills
+```
+
+### 1.7 - Testing Konektivitas
+
+#### Test 1: Verifikasi IP Client (DHCP)
+```bash
+# Di setiap client (Gilgalad, Elendil, dll)
+ip a | grep inet
+
+# Expected output contoh (Gilgalad):
+# inet 10.76.2.5/25 brd 10.76.2.127 scope global eth0
+```
+
+#### Test 2: Test Gateway
+```bash
+# Di Gilgalad (gateway: 10.76.2.1)
+ping 10.76.2.1 -c 3
+
+# Di Elendil (gateway: 10.76.1.1)
+ping 10.76.1.1 -c 3
+
+# Di Durin (gateway: 10.76.2.129)
+ping 10.76.2.129 -c 3
+```
+
+#### Test 3: Test DNS Resolution
+```bash
+# Di semua client
+nslookup google.com
+# Expected: Resolved ke IP address
+
+ping google.com -c 3
+# Expected: Reply dari google.com
+```
+
+#### Test 4: Test Inter-Client Communication
+```bash
+# Dari Gilgalad ke Elendil
+ping <IP_Elendil> -c 3
+
+# Dari Durin ke Cirdan
+ping <IP_Cirdan> -c 3
+```
+
+#### Test 5: Test Web Server Access
+```bash
+# Dari semua client
+curl http://10.76.2.222          # Palantir
+# Expected: "Welcome to Palantir"
+
+curl http://10.76.2.230          # IronHills
+# Expected: "Welcome to IronHills"
+```
+
+#### Test 6: Test Internet Access
+```bash
+# Dari semua client
+ping 8.8.8.8 -c 3
+# Expected: Reply from 8.8.8.8
+
+curl google.com
+# Expected: HTML response
+```
+
 ## MISI 2: MENEMUKAN JEJAK KEGELAPAN (SECURITY RULES)
 
 ### 2.1 - Routing ke Internet (SNAT Configuration)
