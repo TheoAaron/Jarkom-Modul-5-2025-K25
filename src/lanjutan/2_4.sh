@@ -23,7 +23,7 @@ iptables -A INPUT -p tcp --dport 80 -s 10.76.1.0/24 -m time --weekdays Sat,Sun -
 iptables -A INPUT -p tcp --dport 80 -j DROP
 
 # Step 3: Check current day
-bashdate +"%A, %Y-%m-%d"
+date +"%A, %Y-%m-%d"
 
 # Step 4: Testing
 # Test pada WEEKDAY (sekarang = Rabu - should FAIL)
@@ -33,12 +33,8 @@ curl http://10.76.2.230 -m 5
 # Expected: Connection timeout atau connection refused
 # Simulate SATURDAY untuk testing:
 # Di IronHills - Change system date
-date -s 'Sat Nov 30 10:00:00 WIB 2024'
+date -s "Sat Nov 30 10:00:00 2024"
 
 # Sekarang test dari client
 curl http://10.76.2.230
 # Expected: "Welcome to IronHills"
-
-# Restore date after testing:
-# Di IronHills
-date -s 'Wed Nov 27 14:00:00 WIB 2024'

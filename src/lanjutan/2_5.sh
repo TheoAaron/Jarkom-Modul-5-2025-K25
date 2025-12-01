@@ -36,8 +36,8 @@ curl http://10.76.2.222 -m 5
 
 # Simulate 19:00 untuk test Manusia:
 # Di Palantir
-date -s 'Wed Nov 27 19:00:00 WIB 2024'
+date -s "2024-11-27 19:00:00"
 
 # Test dari Elendil
 curl http://10.76.2.222
-Expected: "Welcome to Palantir"
+# Expected: "Welcome to Palantir"

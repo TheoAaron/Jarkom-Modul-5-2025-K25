@@ -1,3 +1,4 @@
+#vilya
 # Clear existing NAT rules
 iptables -t nat -F OUTPUT
 
@@ -5,7 +6,7 @@ iptables -t nat -F OUTPUT
 iptables -t nat -A OUTPUT -d 10.76.2.192/29 -j DNAT --to-destination 10.76.2.230
 
 # Verify rules
-bashiptables -t nat -L OUTPUT -v -n
+iptables -t nat -L OUTPUT -v -n
 
 # Terminal 1 - Di IronHills
 tcpdump -i eth0 -n 'host 10.76.2.202 and port 80'

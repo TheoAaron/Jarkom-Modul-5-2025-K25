@@ -28,14 +28,14 @@ wait
 # Test 2: Open 5 connections simultaneously
 
 # Dari Durin/Elendil
-for i in {1..5}; do
-  (curl http://10.76.2.230 && echo "Connection $i: OK") &
+for i in {1..3}; do
+  (echo "GET / HTTP/1.0" | nc 10.76.2.230 80 && echo "Connection $i: OK") &
 done
-wait
-Expected:
+
+# Tunggu sebentar, lalu coba koneksi ke-4
+sleep 1
+echo "GET / HTTP/1.0" | nc 10.76.2.230 80 && echo "Connection 4: OK" || echo "Connection 4: BLOCKED"
+
+# Expected:
 # First 3: OK
 # 4th & 5th: Connection refused/reset
-
-# Step 4: Check active connections
-# Di IronHills
-netstat -an | grep :80 | grep ESTABLISHED | wc -l

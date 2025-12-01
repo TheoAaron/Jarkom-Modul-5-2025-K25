@@ -27,8 +27,3 @@ apt-get install netcat-traditional
 # Di Osgiliath  
 nc -zvu 10.76.2.203 53 -w 3
 # Expected: Timeout atau connection refused
-
-# IMPORTANT: Hapus rules ini setelah testing!
-# Di Narya - HAPUS setelah test
-iptables -D INPUT -p tcp --dport 53 -j DROP
-iptables -D INPUT -p udp --dport 53 -j DROP
