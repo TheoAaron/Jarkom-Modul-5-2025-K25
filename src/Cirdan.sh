@@ -5,6 +5,10 @@ auto eth0
 iface eth0 inet dhcp
 IFACE
 
-service networking restart
+# Restart networking dengan ip command
+ip link set eth0 down
+ip addr flush dev eth0
+ip link set eth0 up
 
-echo 'nameserver 192.168.122.1' > /etc/resolv.conf
+# Request DHCP lease
+udhcpc -i eth0 -t 5 -q -f

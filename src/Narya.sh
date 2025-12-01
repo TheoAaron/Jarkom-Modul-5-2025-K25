@@ -13,7 +13,10 @@ service networking restart
 ip addr add 10.76.2.203/29 dev eth0 2>/dev/null || true
 ip link set eth0 up
 
-echo 'nameserver 192.168.122.1' > /etc/resolv.conf
+cat > /etc/resolv.conf << 'EOF'
+nameserver 127.0.0.1
+nameserver 192.168.122.1
+EOF
 
 route add default gw 10.76.2.201  # Default ke Rivendell
 
