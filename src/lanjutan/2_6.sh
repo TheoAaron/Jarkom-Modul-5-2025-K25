@@ -2,30 +2,20 @@
 # Create PORT_SCAN chain
 iptables -N PORT_SCAN 2>/dev/null || iptables -F PORT_SCAN
 
-# Clear existing rules
 iptables -F INPUT
 
-# Allow established connections
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Allow loopback
 iptables -A INPUT -i lo -j ACCEPT
 
-# Track NEW connections for port scan detection
 iptables -A INPUT -p tcp -m state --state NEW -m recent --set --name portscan
-
-# If > 15 connections in 20 seconds, jump to PORT_SCAN chain
 iptables -A INPUT -p tcp -m state --state NEW -m recent --update --seconds 20 --hitcount 15 --name portscan -j PORT_SCAN
 
-# PORT_SCAN chain actions
 iptables -A PORT_SCAN -m recent --set --name blocked_scanner
 iptables -A PORT_SCAN -j LOG --log-prefix "PORT_SCAN_DETECTED: " --log-level 4
 iptables -A PORT_SCAN -j DROP
 
-# Block ALL traffic from known scanners
 iptables -A INPUT -m recent --rcheck --name blocked_scanner -j DROP
 
-# Allow normal traffic
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
@@ -48,7 +38,9 @@ curl http://10.76.2.222
 
 # Step 4: Check logs
 # Di Palantir
-dmesg | grep PORT_SCAN_DETECTED
+dmesg | tail -50 | grep PORT_SCAN
+cat /var/log/kern.log | grep PORT_SCAN
+journalctl -k | grep PORT_SCAN
 # Expected: Log entries dengan IP Elendil
 
 # Step 5: Reset untuk test ulang
