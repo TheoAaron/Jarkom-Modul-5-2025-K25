@@ -665,12 +665,6 @@ iptables -L INPUT -v -n | grep -E "10.76.2.192|10.76.2.128"
 ## Revisi
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/5d4cbc20-cc39-471a-9d11-0ad0e4f5f243" />
 
-Oke bestie, ini **paragraf penjelasan + code block** jadi satu bagian README yang rapi:
-
----
-
-### **Penjelasan Perubahan**
-
 Dengan menambahkan perintah untuk meng-install dan menyalakan `rsyslog`,  akhirnya mengaktifkan sistem logging kernel yang sebelumnya belum berjalan. Walaupun iptables sudah melakukan logging dengan `LOG --log-prefix`, log tersebut tidak pernah muncul karena tidak ada daemon yang menangkap dan menuliskannya ke file log. Setelah `rsyslog` aktif, semua pesan kernel—including log dari chain `PORT_SCAN`—langsung mulai muncul di `dmesg`, `journalctl`, dan `/var/log/kern.log`. Perintah `dmesg -c`  digunakan untuk mengosongkan buffer sebelum test, dan saat melakukan scanning menggunakan `nmap`, rule `recent` melewati hitcount 15 sehingga memicu logging dan akhirnya bisa tampil ketika dicek melalui `dmesg | grep PORT_SCAN`.
 
 ```bash
