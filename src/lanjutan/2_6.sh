@@ -38,9 +38,14 @@ curl http://10.76.2.222
 
 # Step 4: Check logs
 # Di Palantir
-dmesg | tail -50 | grep PORT_SCAN
-cat /var/log/kern.log | grep PORT_SCAN
-journalctl -k | grep PORT_SCAN
+# Download package
+apt update
+apt install rsyslog -y
+service rsyslog start
+
+dmesg -c
+nmap -p 1-100 10.76.2.222
+dmesg | grep PORT_SCAN
 # Expected: Log entries dengan IP Elendil
 
 # Step 5: Reset untuk test ulang
